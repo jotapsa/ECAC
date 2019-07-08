@@ -94,7 +94,7 @@ class GamePlay:
             s1 = self.game.reset()
         if self.p_name is not None:
             # plt.savefig(self.p_name + '.png')
-            f = open(self.p_name + '_q_history.txt', 'w')
+            f = open(self.p_name + '_q_history.txt', 'a')
             f.write(str(self.q_history))
         return s1
 

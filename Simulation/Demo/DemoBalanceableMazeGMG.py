@@ -40,20 +40,21 @@ def main():
     gm = ABWPL(L_RATE, Y, E_RATE, game.action_space.n, PI_L_RATE, MIN_E_RATE)
 
     for player in players:
-
         print('vs Player ' + str(player))
         p = MixedAgent(population[player].pi)
 
         print('state 0')
         N_EPS = 2000
         game.lock_balance_state(0)
-        game_play = GamePlay(game, [p, gm], n_eps=N_EPS, n_steps=N_STEPS, plot=True, plot_id=1, p_color='g', p_rate=500)
+        game_play = GamePlay(game, [p, gm], n_eps=N_EPS, n_steps=N_STEPS, plot=True, plot_id=1, p_color='g', p_rate=500,
+                             p_name='balanceable_maze_gm')
         game_play.train()
 
         print('state 1')
         N_EPS = 8000
         game.lock_balance_state(1)
-        game_play = GamePlay(game, [p, gm], n_eps=N_EPS, n_steps=N_STEPS, plot=True, plot_id=1, p_color='b', p_rate=500)
+        game_play = GamePlay(game, [p, gm], n_eps=N_EPS, n_steps=N_STEPS, plot=True, plot_id=1, p_color='b', p_rate=500,
+                             p_name='balanceable_maze_gm')
         game_play.train()
 
     print('Game Master Demo')

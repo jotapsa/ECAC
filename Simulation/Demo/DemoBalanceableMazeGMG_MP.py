@@ -54,20 +54,20 @@ def main():
             N_EPS = 4000
             game.lock_balance_state(0)
             game_play = GamePlay(game, [p1, p2, gm], n_eps=N_EPS, n_steps=N_STEPS, plot=True, plot_id=2, p_color='r',
-                                 p_rate=1000)
+                                 p_rate=1000, p_name='balanceable_maze_mp_gm')
             game_play.train()
 
             print('state 1')
             N_EPS = 16000
             game.lock_balance_state(1)
             game_play = GamePlay(game, [p1, p2, gm], n_eps=N_EPS, n_steps=N_STEPS, plot=True, plot_id=2, p_color='g',
-                                 p_rate=2000)
+                                 p_rate=2000, p_name='balanceable_maze_mp_gm')
             game_play.train()
 
             print('state 2')
             game.lock_balance_state(2)
             game_play = GamePlay(game, [p1, p2, gm], n_eps=N_EPS, n_steps=N_STEPS, plot=True, plot_id=2, p_color='b',
-                                 p_rate=2000)
+                                 p_rate=2000, p_name='balanceable_maze_mp_gm')
             game_play.train()
 
     print('Game Master Demo')
