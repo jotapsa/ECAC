@@ -53,6 +53,7 @@ class BalanceableMaze(gym.Env):
         # meta
         self.win_history = deque([0])
         self.win_rate = 0.
+        self.win_rate_history = []
 
         # balance state
         self.locked = False
@@ -91,6 +92,8 @@ class BalanceableMaze(gym.Env):
         if len(self.win_history) > 10:
             self.win_history.pop()
         self.win_rate = np.average(self.win_history)
+        if terminal or self.steps >= 25:
+            self.win_rate_history += [self.win_rate]
 
         # get reward
         if terminal:

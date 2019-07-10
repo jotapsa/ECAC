@@ -58,6 +58,8 @@ class BalanceableMazeMP(gym.Env):
         # meta
         self.win_history = [deque([0]), deque([0])]
         self.win_rate = [0., 0.]
+        self.win_rate_history = [[], []]
+
         self.winner = False
 
         # balance state
@@ -206,6 +208,9 @@ class BalanceableMazeMP(gym.Env):
         return states, rewards + balance_reward, terminal, None
 
     def reset(self):
+
+        self.win_rate_history[0] += [self.win_rate[0]]
+        self.win_rate_history[1] += [self.win_rate[1]]
 
         self.winner = False
 
