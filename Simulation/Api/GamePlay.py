@@ -74,7 +74,7 @@ class GamePlay:
             if self.gen:
                 # for p in self.player:
                 #    self.population.append((copy.deepcopy(p)))
-                self.population.append((copy.deepcopy(self.player[-1])))
+                self.population.append((copy.deepcopy(self.player[-1]))) #[-1] returns last element in list
             if self.plot:
                 self.q_history += [np.average(self.q_ep)]
                 self.q_ep = []
