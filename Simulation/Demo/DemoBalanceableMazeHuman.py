@@ -6,7 +6,6 @@ from ast import literal_eval
 
 
 def main():
-
     print('Game Master Load')
 
     pi = {}
