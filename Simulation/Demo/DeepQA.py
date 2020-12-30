@@ -20,8 +20,7 @@ def main():
     game = BalanceableMaze()
     p = DeepQAgent(4)
     gm = MixedAgent(pi)
-    game_play = GamePlay(game, [p, gm], n_eps=N_EPS, n_steps=N_STEPS, plot=True, p_rate=800,
-                         p_name='balanceable_maze')
+    game_play = GamePlay(game, [p, gm], n_eps=N_EPS, n_steps=N_STEPS)
     game_play.train()
 
 
