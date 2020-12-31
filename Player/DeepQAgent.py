@@ -78,23 +78,34 @@ class DeepQAgent(Agent):
             fc2_neurons=128,
             n_actions=n_actions
         )
+        self.target_net = DeepQNetwork(
+            lr=0.003,
+            input_dims=1,
+            fc1_neurons=128,
+            fc2_neurons=128,
+            n_actions=n_actions
+        )
+        self.target_net.load_state_dict(self.policy_net.state_dict())
+        self.target_net.eval()
 
 
     def check_state(self, s):
         pass
 
     def update(self, s0, s1, a, r, t):
-        self.memory.push(s0, a, s1, r, t)
+        self.memory.push([float(s0)], a, [float(s1)], r, t)
+        self.learn()
         pass
 
-    def get_action(self, state):
+    def get_action(self, observation):
         sample = random.random()
         eps_threshold = EPS_END + (EPS_START - EPS_END) * math.exp(-1. * self.steps_done / EPS_DECAY)
 
         self.steps_done += 1
         if sample > eps_threshold:
+            state = torch.tensor([float(observation)]).to(self.policy_net.device)
             actions = self.policy_net.forward(state)
-            action = T.argmax(actions).item()
+            action = actions.max().item()
         else:
             action = np.random.choice(self.action_space)
 
@@ -110,18 +121,25 @@ class DeepQAgent(Agent):
         # to Transition of batch-arrays.
         batch = Transition(*zip(*transitions))
 
-        state_batch = torch.cat(batch.state)
-        action_batch = torch.cat(batch.action)
-        next_state_batch = torch.cat(batch.next_state)
-        reward_batch = torch.cat(batch.reward)
-        terminal_batch = torch.cat(batch.terminal)
+        batch_index = np.arange(BATCH_SIZE, dtype=np.int64)
 
-        # Compute Huber loss
-        # loss = F.smooth_l1_loss(state_action_values, expected_state_action_values.unsqueeze(1))
+        state_batch = torch.tensor(batch.state).to(self.policy_net.device)
+        action_batch = torch.tensor(batch.action).to(self.policy_net.device)
+        next_state_batch = torch.tensor(batch.next_state).to(self.policy_net.device)
+        reward_batch = torch.tensor(batch.reward).to(self.policy_net.device)
+        terminal_batch = torch.tensor(batch.terminal).to(self.policy_net.device)
 
+        state_action_values = self.policy_net.forward(state_batch)
+        next_state_values = self.target_net.forward(next_state_batch)
+        next_state_values[terminal_batch] = 0.0
+
+        reward_batch = reward_batch.reshape(128, 1)
+        reward_batch = reward_batch.expand(-1, 4)
+        expected_state_action_values = (next_state_values * GAMMA) + reward_batch
+
+        # # Compute loss
+        loss = self.policy_net.loss(state_action_values, expected_state_action_values ).to(self.policy_net.device)
         # Optimize the model
-        self.optimizer.zero_grad()
+        self.policy_net.optimizer.zero_grad()
         # loss.backward()
-        for param in self.policy_net.parameters():
-            param.grad.data.clamp_(-1, 1)
-        self.optimizer.step()
+        self.policy_net.optimizer.step()
