@@ -90,11 +90,14 @@ class DeepQAgent(Agent):
         # Initialize time step (for updating every UPDATE_EVERY steps)
         self.t_step = 0
 
+        self.q = {}
+
     def check_state(self, s):
         pass
 
     def update(self, s0, s1, a, r, t):
         self.memory.push(s0, a, s1, r, t)
+        self.q[s1] = self.get_q_values(s1)
         self.learn()
         pass
 
@@ -112,6 +115,13 @@ class DeepQAgent(Agent):
             action = np.random.choice(np.arange(self.action_size))
 
         return action
+
+    def get_q_values(self, observation):
+        with torch.no_grad():
+            state = torch.tensor(observation).float().unsqueeze(0).to(device)
+            action_values = self.policy_net(state)
+            q_values = action_values.detach().cpu().numpy()
+        return q_values
 
     def learn(self):
         # Learn every UPDATE_EVERY time steps.
