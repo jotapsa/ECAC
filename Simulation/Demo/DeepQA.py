@@ -1,5 +1,8 @@
+from ast import literal_eval
+
 from Game.BalanceableMaze import *
 from Simulation.Api.GamePlay import *
+from Player.MixedAgent import *
 from Player.DeepQAgent import *
 
 
