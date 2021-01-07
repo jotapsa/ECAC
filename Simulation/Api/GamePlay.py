@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 class GamePlay:
 
     def __init__(self, game, player, n_eps=100, n_steps=50, gen=False, render=False, plot=False, sleep=0, plot_id=0,
-                 p_color='b', p_rate=1, p_name=None):
+                 p_color='black', p_rate=1, p_name=None):
         """
 
         :param game:
@@ -84,7 +84,7 @@ class GamePlay:
                 if ep == self.p_rate:
                     plt.clf()
                 if ep % self.p_rate == 0:
-                    plt.plot(self.ep_list, self.q_history, color=self.p_color)
+                    plt.plot(self.ep_list, self.q_history, color=self.p_color, linewidth=0.1)
                     # plt.plot(self.ep_list, self.r_history, color=self.p_color, linestyle='dashed')
                     plt.xlabel('Episode')
                     plt.ylabel('Average Q')

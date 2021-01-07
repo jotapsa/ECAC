@@ -14,13 +14,12 @@ from Player.Api.Agent import Agent
 
 BATCH_SIZE = 64
 GAMMA = 0.99  # discount factor
-TAU = 1e-3  # for soft update of target parameters
-LR = 5e-4  # learning rate
+TAU = 0.05  # for soft update of target parameters
+LR = 0.001  # learning rate
 EPS_START = 0.9
 EPS_END = 0.05
-EPS_DECAY = 200
+EPS_DECAY = 400  # The higher the more it will explore
 UPDATE_EVERY = 4  # how often to update the network
-TARGET_UPDATE = 10
 
 # if gpu is to be used
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -162,7 +161,7 @@ class DeepQAgent(Agent):
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
-
+        # Update the target network
         self.soft_update(self.policy_net, self.target_net, TAU)
 
     def soft_update(self, local_model, target_model, tau):
